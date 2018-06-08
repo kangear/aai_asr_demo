@@ -145,24 +145,26 @@ var params = {
   format: 2,
   rate: 8000,
   speech: base64_encode('yhyl_8k_16bit_1ch.wav'),
-  time_stamp: Date.now(),
+  time_stamp: (Date.now() / 1000).toFixed(0),
   nonce_str: Math.random().toString(36).slice(-5),
   sign: '',
 }
 
-console.log(params);
+// console.log(params);
 params.sign = getReqSign(params, APP_KEY);
+console.log(params);
+// let jsonDataObj = {'app_id': params.app_id, 'format': params.format, 'rate': params.rate, 'speech': params.speech, 'time_stamp':params.time_stamp, 'nonce_str': params.nonce_str, 'sign': params.sign};
+// request.post({
+//     url: URL,
+//     body: jsonDataObj,
+//     json: true
+//   }, function(error, response, body){
+//     console.log(body);
+// });
 
-
-request.post(
-    URL,
-    { json: params },
-    function (error, response, body) {
-      // console.log(error);
-      // console.log(response);
-      // console.log(body);
-      if (!error && response.statusCode == 200) {
-          console.log(body)
-      }
-    }
-);
+request.post({
+  url:     URL,
+  form:    params
+}, function(error, response, body){
+  console.log(body);
+});
