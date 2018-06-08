@@ -80,7 +80,7 @@ var  URLEncode = function(clearString) {
  * return URL参数字符串 
  */  
 var jsonToURL = function (param, key, encode) {  
-    if(param==null) return ''; 
+    if( param == null) return ''; 
     
     var paramStr = '';  
     var t = typeof (param);  
@@ -96,7 +96,7 @@ var jsonToURL = function (param, key, encode) {
     return paramStr;  
 };
 
-var objKeySort = function(arys) {
+var ksort = function(arys) {
     //先用Object内置类的keys方法获取要排序对象的属性名，再利用Array原型上的sort方法对获取的属性名进行排序，newkey是一个数组
     var newkey = Object.keys(arys).sort();
     //console.log('newkey='+newkey);
@@ -119,15 +119,21 @@ var objKeySort = function(arys) {
 var getReqSign = function (params, appkey) {
     
     // 1. 字典升序排序
-    let json = objKeySort(params);
+    let params2 = ksort(params);
     
     // 2. 拼按URL键值对
-    let str = jsonToURL(json);
-    str = str.substr(1,str.length);
-    
-     // 3. 拼接app_key
+    let str = '';
+    for (var key in params2){
+      if (params2.hasOwnProperty(key)) {
+        let value = params2[key];
+        if (value !== '') { // 过滤空值，比如sign
+           str += key + '=' + URLEncode(value) + '&';
+        }
+      }
+    }
+  
+    // 3. 拼接app_key
     str += '&' + 'app_key=' + appkey;
-    // console.log(str);
     
     // 4. MD5运算+转换大写，得到请求签名
     let sign = md5(str || '').toUpperCase();
@@ -140,27 +146,18 @@ const APP_KEY = 'VwLCZccX5QTEOArd';
 const APP_ID = 1106884219;
 
 
-var params = {
+let params = {
   app_id: APP_ID,
   format: 2,
   rate: 8000,
   speech: base64_encode('yhyl_8k_16bit_1ch.wav'),
   time_stamp: (Date.now() / 1000).toFixed(0),
   nonce_str: Math.random().toString(36).slice(-5),
-  sign: '',
+  sign: '', // 初始值一定要写成'',不要写成别的值
 }
-
-// console.log(params);
+console.log(params);
 params.sign = getReqSign(params, APP_KEY);
 console.log(params);
-// let jsonDataObj = {'app_id': params.app_id, 'format': params.format, 'rate': params.rate, 'speech': params.speech, 'time_stamp':params.time_stamp, 'nonce_str': params.nonce_str, 'sign': params.sign};
-// request.post({
-//     url: URL,
-//     body: jsonDataObj,
-//     json: true
-//   }, function(error, response, body){
-//     console.log(body);
-// });
 
 request.post({
   url:     URL,
