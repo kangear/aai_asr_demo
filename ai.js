@@ -72,30 +72,6 @@ var  URLEncode = function(clearString) {
     return output;
 }
 
-/** 
- * param 将要转为URL参数字符串的对象 
- * key URL参数字符串的前缀 
- * encode true/false 是否进行URL编码,默认为true 
- *  
- * return URL参数字符串 
- */  
-var jsonToURL = function (param, key, encode) {  
-    if( param == null) return ''; 
-    
-    var paramStr = '';  
-    var t = typeof (param);  
-    if (t == 'string' || t == 'number' || t == 'boolean') {  
-        paramStr += '&' + key + '=' + ((encode == null || encode) ? URLEncode(param) : param);
-    } else {  
-        for (var i in param) {  
-            var k = key == null ? i : key + (param instanceof Array ? '[' + i + ']' : '.' + i);  
-            paramStr += jsonToURL(param[i], k, encode);
-        }  
-    }
-
-    return paramStr;  
-};
-
 var ksort = function(arys) {
     //先用Object内置类的keys方法获取要排序对象的属性名，再利用Array原型上的sort方法对获取的属性名进行排序，newkey是一个数组
     var newkey = Object.keys(arys).sort();
@@ -133,7 +109,8 @@ var getReqSign = function (params, appkey) {
     }
   
     // 3. 拼接app_key
-    str += '&' + 'app_key=' + appkey;
+    str += 'app_key=' + appkey;
+    //console.log(str);
     
     // 4. MD5运算+转换大写，得到请求签名
     let sign = md5(str || '').toUpperCase();
@@ -155,9 +132,9 @@ let params = {
   nonce_str: Math.random().toString(36).slice(-5),
   sign: '', // 初始值一定要写成'',不要写成别的值
 }
-console.log(params);
+//console.log(params);
 params.sign = getReqSign(params, APP_KEY);
-console.log(params);
+//console.log(params);
 
 request.post({
   url:     URL,
