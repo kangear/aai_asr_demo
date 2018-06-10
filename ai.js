@@ -118,6 +118,7 @@ var getReqSign = function (params, appkey) {
     return sign.toUpperCase();
 }
 
+// 这里需要替换成自己的APP_KEY 和 APP_ID
 const URL = 'https://api.ai.qq.com/fcgi-bin/aai/aai_asr';
 const APP_KEY = 'VwLCZccX5QTEOArd';
 const APP_ID = 1106884219;
